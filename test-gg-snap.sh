@@ -62,7 +62,7 @@ function cleanup_deployments() {
 # if it doesn't exist then we create it
 echo "ensuring greengrass service role for this account"
 set +e
-if ! aws greengrass get-service-role-for-account --region "$AWS_REGION" > /dev/null ; then
+if ! aws greengrass get-service-role-for-account --region "$AWS_REGION" 2>/dev/null > /dev/null ; then
     set -e
     # note: copied from https://docs.aws.amazon.com/greengrass/latest/developerguide/service-role.html
     # create the role - getting the role ARN if successful
@@ -81,10 +81,10 @@ if ! aws greengrass get-service-role-for-account --region "$AWS_REGION" > /dev/n
 
     # attach the policy role to the greengrass policy
     aws iam attach-role-policy --role-name "$GREENGRASS_SERVICE_ROLE" \
-      --policy-arn arn:aws:iam::aws:policy/service-role/AWSGreengrassResourceAccessRolePolicy
+      --policy-arn arn:aws:iam::aws:policy/service-role/AWSGreengrassResourceAccessRolePolicy > /dev/null
 
     # associate the greengrass service role to the account
-    aws greengrass associate-service-role-to-account --role-arn "$roleArn" --region "$AWS_REGION"
+    aws greengrass associate-service-role-to-account --role-arn "$roleArn" --region "$AWS_REGION" > /dev/null
 fi
 set -e
 
